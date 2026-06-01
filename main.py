@@ -28,6 +28,11 @@ async def verify_key(key: str = Security(api_key_header)):
 async def health():
     return {"status": "ok"}
 
+@app.get("/debug")
+async def debug():
+    key = os.environ.get("API_KEY", "NOT SET")
+    return {"key_length": len(key), "key_set": key != "NOT SET", "first_char": key[0] if key else ""}
+
 @app.post("/convert")
 async def convert(file: UploadFile = File(...), key: str = Security(verify_key)):
     filename = file.filename or ""
